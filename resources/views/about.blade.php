@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends("layouts.app")
 
-@section('title', 'About')
+@section("title", "About")
 
-@section('content')
+@section("content")
 
 <main class="container my-5">
     <!-- Hero Section -->

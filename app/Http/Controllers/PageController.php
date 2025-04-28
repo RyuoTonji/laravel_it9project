@@ -28,4 +28,9 @@ class PageController extends Controller
     {
         return view('contact', ['title' => 'Contact']);
     }
+    
+    public function booking()
+    {
+        return view('booking', ['title' => 'Booking']);
+    }
 }

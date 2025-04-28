@@ -1,9 +1,8 @@
-@extends('layouts.app')
+@extends("layouts.app")
 
-@section('title', 'Contact')
+@section("title", "Contact Us")
 
-@section('content')
-
+@section("content")
 <main class="container my-5">
     <!-- Hero Section -->
     <section class="bg-light py-5 mb-5 text-center">
