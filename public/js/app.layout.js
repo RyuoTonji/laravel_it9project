@@ -21,6 +21,7 @@ const toggleForms = (formType) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+
   document.getElementById("authModal").addEventListener("show.bs.modal", (event) => {
     toggleForms(event.relatedTarget.getAttribute("data-form"));
   });
@@ -32,4 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     bsToast.show();
   });
+});
+
+window.addEventListener("load", () => {
+  const authBtn = document.getElementById('AuthBtn');
+  if (authBtn) {
+    authBtn.removeAttribute('disabled');
+  }
 });

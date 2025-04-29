@@ -1,3 +1,7 @@
+{{-- <?php
+use Illuminate\Support\Facades\Auth;
+?> --}}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +24,6 @@
   </head>
 
   <body>
-    <div> {{ $errors->register->any() ?? $errors->login->any() ?? 'No errors' }}</div>
     <!-- Header Navigation -->
     <header class="bg-light shadow-sm">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -68,11 +71,15 @@
             <div class="d-flex gap-3 align-items-center">
               <a href="{{ route('booking') }}" class="btn btn-primary">Book now</a>
               @if (Auth::check())
-                <a href="{{ route('logout') }}" class="btn btn-outline" data-form="login"><i
-                    class="bi bi-person-circle"></i> {{ Auth::user()->Email }}</a>
+                <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <button type="submit" class="btn btn-outline" id="AuthBtn" data-form="login"><i
+                      class="bi bi-person-circle"></i>
+                    {{ Auth::user()->name ? '(' . Auth::user()->name . ')' : '' }} {{ Auth::user()->email }}</button>
+                </form>
               @else
-                <a href="#" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#authModal"
-                  data-form="login">Sign Up/Login</a>
+                <button class="btn btn-outline-secondary" id="AuthBtn" data-bs-toggle="modal"
+                  data-bs-target="#authModal" data-form="login" disabled>Sign Up / Login</button>
               @endif
             </div>
           </div>
@@ -94,28 +101,59 @@
             <div id="loginForm">
               <form action="{{ route('login') }}" method="POST">
                 @csrf
-                <input type="email" class="modal-input" placeholder="Email" name="Email" required>
-                <input type="password" class="modal-input" placeholder="Password" name="Password" required>
+                <input type="email" class="modal-input @error('email') is-invalid @enderror" placeholder="email"
+                  name="email" value="{{ old('email') }}" required>
+                @error('email')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <input type="password" class="modal-input @error('password') is-invalid @enderror"
+                  placeholder="password" name="password" required>
+                @error('password')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
                 <button type="submit" class="modal-btn">LOGIN</button>
               </form>
             </div>
             <div id="signupForm" style="display: none;">
               <form action="{{ route('register') }}" method="POST">
                 @csrf
-                <input type="text" class="modal-input" placeholder="Username" required>
-                <input type="email" class="modal-input" placeholder="Email" required>
-                <input type="password" class="modal-input" placeholder="Password" required>
-                <input type="password" class="modal-input" placeholder="Confirm Password" required>
-                <button typ="submit" class="modal-btn">SIGN UP</button>
+                <input type="text" class="modal-input" placeholder="Username" name="username"
+                  value="{{ old('username') }}" required>
+                @error('username', 'register')
+                  <div class="text-danger ms-2">
+                    {{ $message }}
+                  </div>
+                @enderror
+                <input type="email" class="modal-input" placeholder="Email" name="email"
+                  value="{{ old('email') }}" required>
+                @error('email', 'register')
+                  <div class="text-danger ms-2">
+                    {{ $message }}
+                  </div>
+                @enderror
+                <input type="password" class="modal-input" placeholder="Password" name="password" required>
+                @error('password', 'register')
+                  <div class="text-danger ms-2">
+                    {{ $message }}
+                  </div>
+                @enderror
+                <input type="password" class="modal-input" placeholder="Confirm password"
+                  name="password_confirmation" required>
+                @error('password_confirmation', 'register')
+                  <div class="text-danger ms-2">
+                    {{ $message }}
+                  </div>
+                @enderror
+                <button type="submit" class="modal-btn">SIGN UP</button>
               </form>
             </div>
-            <p class="text-center">Or Sign in with social platform</p>
+            {{-- <p class="text-center">Or Sign in with social platform</p>
             <div class="social-login">
               <a href="#"><i class="bi bi-facebook"></i></a>
               <a href="#"><i class="bi bi-twitter"></i></a>
               <a href="#"><i class="bi bi-google"></i></a>
               <a href="#"><i class="bi bi-linkedin"></i></a>
-            </div>
+            </div> --}}
           </div>
         </div>
       </div>
@@ -125,7 +163,7 @@
     @yield('content')
 
     @if (session('toast_success'))
-      <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1050;">
+      <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
         <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
           aria-atomic="true">
           <div class="d-flex">
@@ -138,7 +176,7 @@
         </div>
       </div>
     @elseif (session('toast_error'))
-      <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1050;">
+      <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
         <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
           aria-atomic="true">
           <div class="d-flex">
@@ -192,14 +230,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/app.layout.js') }}" defer></script>
     <script>
-      @if ($errors->register->any())
-        new bootstrap.Modal(document.getElementById('authModal')).show();
-        document.addEventListener('DOMContentLoaded', function() {
+      window.addEventListener("load", () => {
+        @if ($errors->register->any())
           toggleForms('signup');
-        });
-      @elseif ($errors->login->any())
-        new bootstrap.Modal(document.getElementById('authModal')).show();
-      @endif
+          new bootstrap.Modal(document.getElementById('authModal')).show();
+        @elseif (session('LoginError'))
+          new bootstrap.Modal(document.getElementById('authModal')).show();
+        @endif
+      });
     </script>
   </body>
 

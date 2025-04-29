@@ -8,31 +8,34 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller {
-
   public function RegisterUser(Request $request) {
-    $CREDENTIALS = $request->validateWithBag('register', [
-      'Username' => 'required|unique:users',
-      'Email' => 'required|email|unique:users',
-      'Password' => 'required|min:6|confirmed',
-      'ConfirmPassword' => 'required|same:Password',
+    $request->validateWithBag('register', [
+      'username' => 'required|unique:users',
+      'email' => 'required|email|unique:users',
+      'password' => 'required|min:6|confirmed',
+      'password_confirmation' => 'required|min:6',
     ]);
 
     User::create([
-      'Username' => $CREDENTIALS['Username'],
-      'Email' => $CREDENTIALS['Email'],
-      'Password' => Hash::make($CREDENTIALS['Password']),
+      'username' => $request->username,
+      'email' => $request->email,
+      'password' => Hash::make($request->password),
     ]);
 
     return back()->with('toast_success', 'Registration successful! You can now log in.');
   }
 
   public function LoginUser(Request $request) {
-    $CREDENTIALS = $request->validateWithBag('login',[
-      'Email' => 'required|email',
-      'Password' => 'required',
+    $request->validate([
+      'email' => 'required|email',
+      'password' => 'required',
     ]);
-    if (!Auth::attempt($CREDENTIALS)) {
-      return back()->with('toast_error', 'Login failed. Check your credentials.')->withInput($request->only('Email'));
+
+    if (!Auth::attempt($request->only('email', 'password'))) {
+      return back()->with([
+        'toast_error' => 'Login failed. Check your credentials.',
+        'LoginError' => 'Login failed. Check your credentials.'
+      ])->withInput($request->only('email'));
     }
 
     return back()->with('toast_success', 'Login successful!');
