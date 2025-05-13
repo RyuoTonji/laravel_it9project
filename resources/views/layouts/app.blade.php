@@ -69,7 +69,7 @@ use Illuminate\Support\Facades\Auth;
 
             <!-- Booking and Auth Buttons (End) -->
             <div class="d-flex gap-3 align-items-center">
-              <a href="{{ route('booking') }}" class="btn btn-primary">Book now</a>
+              <a href="{{ route('bookings.create') }}" class="btn btn-primary">Book now</a>
               @if (Auth::check())
                 <form action="{{ route('logout') }}" method="POST">
                   @csrf

@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
     public function up(): void
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->decimal('room_number');
+            $table->string('room_number')->unique();
             $table->string('room_type');
             $table->decimal('price', 10, 2);
-            $table->string('status')->default('pending');
+            $table->enum('status', ['available', 'occupied', 'maintenance'])->default('available');
             $table->timestamps();
         });
     }
 
-    
     public function down(): void
     {
         Schema::dropIfExists('rooms');

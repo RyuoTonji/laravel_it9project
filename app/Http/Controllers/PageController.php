@@ -24,6 +24,6 @@ class PageController extends Controller {
   }
 
   public function booking() {
-    return view('booking', ['title' => 'Booking']);
+    return view('booking', ['title' => 'Booking', '']);
   }
 }
