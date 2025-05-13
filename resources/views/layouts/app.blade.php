@@ -222,7 +222,7 @@ use Illuminate\Support\Facades\Auth;
           </div>
         </div>
         <hr class="border-gray-600 mt-4">
-        <p class="text-center text-gray-400">© 2025 Luxury Hotel. All rights reserved.</p>
+        <p class="text-center text-gray-400">© 2025 Kagayaku Kin Yume Hotel. All rights reserved.</p>
       </div>
     </footer>
 
